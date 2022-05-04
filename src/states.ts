@@ -16,6 +16,8 @@ interface ModeMenuOption {
   description: string;
 }
 
+const config = vscode.workspace.getConfiguration("syncScroll");
+
 abstract class State<T = any> {
   private vscodeCommand: vscode.Command;
   protected abstract key: string;
@@ -42,16 +44,24 @@ abstract class State<T = any> {
     this.statusBarItem.text = this.toText(value);
   }
   public statusBarItem: vscode.StatusBarItem;
-  public init = () => this.set(this.get() ?? this.defaultValue);
-  public registerCommand = (callback: () => void = () => {}) =>
+  public init = () => {
+    // Always set enabled when defined in the config
+    if (this.key === "syncScroll.enabled") {
+      this.set(this.defaultValue);
+    } else {
+      this.set(this.get() ?? this.defaultValue);
+    }
+  };
+  public registerCommand = (callback: () => void = () => { }) =>
     vscode.commands.registerCommand(this.vscodeCommand.command, () => {
       this.executeCommand.call(this, callback);
     });
 }
 
 export class OnOffState extends State<ON_OFF> {
-  protected defaultValue = ON_OFF.ON;
-  protected key = "syncScroll.onOff";
+  protected key = "syncScroll.enabled";
+  protected configEnabled = config.get("enabled");
+  protected defaultValue = this.configEnabled ? ON_OFF.ON : ON_OFF.OFF;
   protected toText = (value: string) => `Sync Scroll: ${value}`;
   protected executeCommand(callback: () => void) {
     this.set(this.isOff() ? ON_OFF.ON : ON_OFF.OFF);
@@ -65,7 +75,8 @@ export class OnOffState extends State<ON_OFF> {
 
 export class ModeState extends State<MODE> {
   protected key = "syncScroll.mode";
-  protected defaultValue = MODE.NORMAL;
+  protected configMode = config.get("mode");
+  protected defaultValue = this.configMode === MODE.OFFSET ? MODE.OFFSET : MODE.NORMAL;
   protected toText = (value: string) => `Sync Scroll Mode: ${value}`;
   protected executeCommand(callback: () => void) {
     vscode.window

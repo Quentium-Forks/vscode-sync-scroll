@@ -58,6 +58,30 @@
           "group": "1_modification"
         }
       ]
+    },
+    "configuration": {
+      "type": "object",
+      "title": "Sync Scroll",
+      "properties": {
+        "syncScroll.enabled": {
+          "type": "boolean",
+          "description": "Enable Sync Scroll by default when loading VSCode",
+          "default": false
+        },
+        "syncScroll.mode": {
+          "type": "string",
+          "description": "Default mode for Sync Scroll",
+          "default": "NORMAL",
+          "enum": [
+            "NORMAL",
+            "OFFSET"
+          ],
+          "enumDescriptions": [
+            "Aligned by the top of the view range",
+            "Aligned by the scrolled lines offset"
+          ]
+        }
+      }
     }
   },
   "scripts": {
