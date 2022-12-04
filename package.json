@@ -2,7 +2,7 @@
   "name": "vscode-sync-scroll",
   "displayName": "Sync Scroll",
   "description": "Make split panels scroll synchronically",
-  "version": "1.3.0",
+  "version": "2.0.0",
   "author": "dqisme",
   "contributors": [
     "Quentin Lienhardt"
